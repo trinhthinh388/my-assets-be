@@ -48,3 +48,18 @@ type BlockInfo struct {
 	GasUsed          string             `json:"gasUsed" bson:"gasUsed"`
 	Uncles           []string           `json:"Uncles" bson:"uncles"`
 }
+
+type Transaction struct {
+	Hash             string  `json:"hash" bson:"hash"`
+	Nonce            int64   `json:"nonce,string" bson:"nonce"`
+	TransactionIndex int     `json:"transactionIndex,string" bson:"transactionIndex"`
+	FromAddress      string  `json:"fromAddress" bson:"fromAddress"`
+	ToAddress        string  `json:"toAddress" bson:"toAddress"`
+	Value            *BigInt `json:"value" bson:"value"`
+	Gas              int64   `json:"gas,string" bson:"gas"`
+	GasPrice         int64   `json:"gasPrice,string" bson:"gasPrice"`
+	Input            string  `json:"input" bson:"input"`
+	BlockHash        string  `json:"blockHash" bson:"blockHash"`
+	BlockNumber      int64   `json:"blockNumber,string" bson:"blockNumber"`
+	BlockTimestamp   Time    `json:"timestamp" bson:"timestamp"`
+}
