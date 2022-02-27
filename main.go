@@ -20,17 +20,19 @@ func main() {
 		log.Fatal("Error while loading .env file.")
 	}
 
-	config.Migrate()
-
 	app := fiber.New()
 
-	tracker, err := controllers.NewTracker("https://data-seed-prebsc-1-s1.binance.org:8545/", "BNB Testnet")
+	mysqlClient := config.GetMysqlClient()
+	con, _ := mysqlClient.DB()
+	defer con.Close()
 
-	if err != nil {
-		panic(err)
-	}
+	// tracker, err := controllers.NewTracker("https://data-seed-prebsc-1-s1.binance.org:8545/", "BNB Testnet")
 
-	tracker.Track()
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// tracker.Track()
 
 	go controllers.RunHub()
 

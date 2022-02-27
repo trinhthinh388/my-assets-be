@@ -14,15 +14,12 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/valyala/fasthttp"
-	"gorm.io/gorm"
 )
 
 var client fasthttp.Client = fasthttp.Client{
 	NoDefaultUserAgentHeader: true,
 	DisablePathNormalizing:   true,
 }
-
-var dbClient *gorm.DB = config.GetMysqlClient()
 
 func GetERC20Price(contractAddress string, chain string, toBlock int) (types.AssetPrice, error) {
 	var priceResp types.AssetPrice
@@ -120,24 +117,23 @@ func GetTxDetail(address string, chain string) (types.TxReceiptResp, error) {
 }
 
 func SyncTx(address string, chain string) {
+	dbClient := config.GetMysqlClient()
 	var latestTx models.Transaction
 	var offset int = 0
 	var fromBlock int = 0
 
 	// Get the latest block that has been synced.
-	dbClient.Limit(1).Order("block_number desc, timestamp desc").Find(&latestTx)
+	dbClient.Limit(1).Order("block_number desc, timestamp desc").Where("owner = ? AND chain = ?", address, chain).Find(&latestTx)
 
-	fmt.Println(latestTx.BlockNumber)
-
-	// if latestTx.BlockNumber <= 0 {
-	// 	fromBlock = 0
-	// } else {
-	// 	fromBlock = latestTx.BlockNumber
-	// }
+	if latestTx.BlockNumber <= 0 {
+		fromBlock = 0
+	} else {
+		fromBlock = latestTx.BlockNumber
+	}
 
 	for {
 		var txsDetail []models.Transaction
-		resp, err := GetTransactions(address, offset, fromBlock, 0, "bsc")
+		resp, err := GetTransactions(address, offset, fromBlock, 0, chain)
 		if err != nil {
 			panic(err)
 		}
@@ -164,6 +160,7 @@ func SyncTx(address string, chain string) {
 				BlockNumber: v.BlockNumber,
 				Timestamp:   v.BlockTimestamp,
 				Chain:       chain,
+				Owner:       address,
 			})
 		}
 

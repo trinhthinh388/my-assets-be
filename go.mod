@@ -5,11 +5,12 @@ go 1.17
 require (
 	github.com/gofiber/fiber/v2 v2.27.0
 	github.com/gofiber/websocket/v2 v2.0.16
-	github.com/holiman/uint256 v1.2.0
 	github.com/joho/godotenv v1.4.0
 	github.com/umbracle/go-web3 v0.0.0-20220224145938-aaa1038c1b69
 	github.com/valyala/fasthttp v1.33.0
 	go.mongodb.org/mongo-driver v1.8.3
+	gorm.io/driver/mysql v1.3.2
+	gorm.io/gorm v1.23.1
 )
 
 require (
@@ -24,7 +25,6 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/klauspost/compress v1.14.3 // indirect
-	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/savsgio/gotils v0.0.0-20220201163454-d252f0a44d5b // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
@@ -43,6 +43,4 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
-	gorm.io/driver/mysql v1.3.2 // indirect
-	gorm.io/gorm v1.23.1 // indirect
 )

@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Transaction struct {
 	ID          uint       `json:"id" gorm:"primaryKey"`
@@ -14,4 +16,5 @@ type Transaction struct {
 	BlockNumber int        `json:"blockNumber" gorm:"notnull;index:idx_block_time_asc,sort:asc;index:idx_block_time_desc,sort:desc"`
 	Timestamp   *time.Time `json:"timestamp" gorm:"index:idx_block_time_asc,sort:asc;index:idx_block_time_desc,sort:desc"`
 	Chain       string     `json:"chain" gorm:"type:varchar(255);index:hash_chain_index"`
+	Owner       string     `json:"owner" gorm:"notnull;type:varchar(42)"`
 }

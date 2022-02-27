@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"my-assets-be/models"
 	"os"
 	"sync"
 
@@ -9,11 +10,12 @@ import (
 	"gorm.io/gorm"
 )
 
-var dbCon *gorm.DB
-var dbSync sync.Once
+var once sync.Once
+var instance *gorm.DB
+var instanceError error
 
 func GetMysqlClient() *gorm.DB {
-	dbSync.Do(func() {
+	once.Do(func() {
 		username := os.Getenv("MYSQL_USER")
 		password := os.Getenv("MYSQL_PASSWORD")
 		host := os.Getenv("MYSQL_HOST")
@@ -22,29 +24,27 @@ func GetMysqlClient() *gorm.DB {
 
 		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, database)
 
-		var err error
-		dbCon, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		instance, instanceError = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-		if err != nil {
-			panic("Failed to connect to Database.")
+		if instanceError != nil {
+			panic(instanceError)
 		}
-
 		fmt.Printf("Connect to %s success.\n", database)
+		Migrate(instance)
 	})
 
-	return dbCon
+	return instance
 }
 
-func Migrate() {
+func Migrate(client *gorm.DB) {
 	fmt.Println("Migrating database...")
 
-	// client := GetMysqlClient()
+	err := client.AutoMigrate(models.Transaction{}, models.Contract{})
 
-	// err := client.AutoMigrate(models.Transaction{})
-
-	// if err != nil {
-	// 	panic("Database migrations has been failed.")
-	// }
+	if err != nil {
+		fmt.Printf("Error migrating database : error=%v", err)
+		return
+	}
 
 	fmt.Println("Your database have been updated. ✅")
 }
